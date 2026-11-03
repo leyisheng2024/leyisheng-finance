@@ -218,21 +218,27 @@ button, a, input, select{touch-action:manipulation}button{min-height:44px}input:
 
 </style><style>
 .auth-panel{max-width:480px;margin:5vh auto;padding:28px;border:1px solid #6e4f3a22;border-radius:24px;background:white;box-shadow:0 8px 40px #6e4f3a0a}.auth-panel>img{object-fit:contain}.auth-panel h1{font-size:25px;margin:12px 0}.auth-panel p{line-height:1.8;margin:12px 0}.auth-panel form{display:grid;gap:10px}.auth-panel input{width:100%;padding:12px;border:1px solid #6e4f3a55;border-radius:12px}.auth-panel button{margin-top:12px;padding:12px;border-radius:12px;background:#6e4f3a;color:white;font-weight:700}.small-note{font-size:13px;opacity:.8}.sync-status{padding:12px 16px;background:#f2f8e8;border-bottom:1px solid #6e4f3a11;overflow-wrap:anywhere}.sync-status[data-error=true]{background:#fff0ed;color:#9c2920}.app-nav{flex-wrap:wrap;align-items:center}.app-nav #account-name{font-size:12px;overflow-wrap:anywhere;max-width:240px;margin-right:auto}button:disabled,input:disabled,select:disabled{opacity:.55;cursor:wait}#ledger-content[inert]{opacity:.6}#auth-message{overflow-wrap:anywhere;color:#8c3b23}@media(max-width:600px){.auth-panel{margin:16px;padding:20px}.app-nav a,.app-nav button{font-size:13px;padding:8px 10px}.app-nav #account-name{width:100%;max-width:none}}
+.login-choices{display:grid;gap:8px}.login-choices label,.session-choice{display:flex;align-items:center;gap:10px;min-height:44px;line-height:1.5;cursor:pointer}.auth-panel .login-choices input,.session-choice input{width:20px;min-height:20px;height:20px;flex-shrink:0;margin:0}.session-choice{font-size:13px;padding:0 6px}.auth-panel .login-choices+p{margin:0;font-size:13px}
 </style></head>
 <body>
 <section id="auth-panel" class="auth-panel" aria-labelledby="login-title">
 <img src="logo.png" alt="樂頤生" width="76" height="76">
 <h1 id="login-title">樂頤生雲端財務系統</h1>
 <p>登入後即可在手機、平板與電腦使用同一份帳本。</p>
-<form id="login-form">
-<label for="login-email">電子郵件</label><input id="login-email" type="email" required autocomplete="username">
-<label for="login-password">密碼</label><input id="login-password" type="password" required autocomplete="current-password">
+<form id="login-form" autocomplete="on">
+<label for="login-email">電子郵件</label><input id="login-email" name="username" type="email" autocapitalize="none" spellcheck="false" required autocomplete="username">
+<label for="login-password">密碼</label><input id="login-password" name="password" type="password" required autocomplete="current-password">
+<div class="login-choices">
+<label><input id="remember-email" type="checkbox" checked>記住登入郵件</label>
+<label><input id="keep-signed-in" type="checkbox">在此裝置保持登入</label>
+<label><input id="save-password" type="checkbox" checked>使用瀏覽器密碼管理員記住密碼</label>
+</div><p class="small-note">保持登入後，下次開啟可直接進入帳本，直到你登出或登入狀態失效。密碼由瀏覽器管理；iPad 可使用「密碼」自動填入。</p>
 <button id="login-btn" type="submit">登入帳本</button>
 </form><p id="auth-message" role="status" aria-live="polite">正在檢查連線設定…</p>
-<p class="small-note">帳號由管理者建立。登入狀態保存在目前分頁；登出後清除畫面資料。</p>
+<p class="small-note">帳號由管理者建立。共用裝置請取消「保持登入」。登出會清除此網站保存的登入狀態，已記住的郵件仍會保留。</p>
 </section><div id="app-shell" hidden>
 <div id="storage-warning" role="alert" hidden style="background:#fff0ef;color:#91251e;padding:16px"></div>
-<nav class="app-nav"><span id="account-name"></span><button id="refresh-btn" type="button">重新整理</button><button id="logout-btn" type="button">登出</button><a href="#form-card">＋ 記一筆</a><a href="#history-card">收支明細</a><button id="install-btn" hidden>安裝程式</button></nav>
+<nav class="app-nav"><span id="account-name"></span><button id="refresh-btn" type="button">重新整理</button><button id="logout-btn" type="button">登出</button><label class="session-choice"><input id="keep-signed-in-account" type="checkbox">在此裝置保持登入</label><a href="#form-card">＋ 記一筆</a><a href="#history-card">收支明細</a><button id="install-btn" hidden>安裝程式</button></nav>
 <p id="sync-status" class="sync-status" role="status" aria-live="polite"></p><p class="device-note">雲端同步版 · 儲存成功後，其他裝置可讀取相同帳務。離線時暫停寫入，請定期下載備份。</p>
     <div id="ledger-content" class="max-w-7xl mx-auto p-4 md:p-6">
         <!-- 頂部品牌視覺橫幅 -->
@@ -467,5 +473,5 @@ button, a, input, select{touch-action:manipulation}button{min-height:44px}input:
     <div role="status" aria-live="polite" id="toast" class="fixed bottom-5 right-5 bg-brand-brown text-white px-4 py-2.5 rounded-xl shadow-lg text-sm font-medium transition-opacity duration-300 opacity-0 pointer-events-none z-50"></div>
 
     
-</div><script src="config.js"></script><script src="vendor/supabase.js"></script><script src="core.js"></script><script src="cloud-store.js"></script><script src="views.js"></script><script src="app.js"></script></body>
+</div><script src="config.js"></script><script src="vendor/supabase.js"></script><script src="core.js"></script><script src="cloud-store.js"></script><script src="views.js"></script><script src="login-memory.js"></script><script src="app.js"></script></body>
 </html>

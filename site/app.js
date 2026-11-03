@@ -1,6 +1,6 @@
 'use strict';
 let records=[], templates=[], logo=null, client=null, ledger=null, accountId=null, authEpoch=0;
-let busy=false, loading=false, pollTimer=null, nextNumber=Date.now();
+let busy=false, loading=false, pollTimer=null, nextNumber=Date.now(), loginMemory=null;
 const validDate=FinanceCore.validDate;
 const $=id=>document.getElementById(id);
 function readLogo(){return logo;}
@@ -25,7 +25,7 @@ function clearSensitive(){
   $('transaction-form').reset();$('editing-id').value='';$('filter-keyword').value='';$('filter-type').value='all';
   $('records-tbody').innerHTML='';$('templates-container').innerHTML='';$('recent-notes').innerHTML='';
   $('account-name').textContent='';$('sync-status').textContent='';$('toast').classList.add('opacity-0');
-  applyCustomLogo(DEFAULT_LOGO);renderRecords();
+  $('login-password').value='';applyCustomLogo(DEFAULT_LOGO);renderRecords();
 }
 function syncedMessage(){return `已讀取雲端第 ${ledger.version} 版 · ${ledger.updatedAt?new Date(ledger.updatedAt).toLocaleString('zh-TW'):'尚無已儲存紀錄'}`;}
 async function mutate(build,message){
@@ -63,6 +63,8 @@ async function handleSession(session){
   authEpoch++;const epoch=authEpoch;accountId=id;clearInterval(pollTimer);clearSensitive();setBusy(false);loading=false;
   if(!id){$('auth-message').textContent='請登入帳本';return;}
   $('app-shell').hidden=false;$('auth-panel').hidden=true;$('account-name').textContent=session.user.email||'已登入';
+  syncLoginChoices();
+  if(loginMemory?.rememberEmail&&session.user.email){try{loginMemory.saveEmail(session.user.email,true);}catch{}}
   ledger=new CloudLedger(client,{schema:1,records:[],templates:structuredClone(defaultTemplates),logo:null});
   $('date').value=getTodayStr();$('filter-month').value=getTodayStr().slice(0,7);setType('收入');
   setStatus('正在讀取雲端帳本…');await refreshLedger();
@@ -74,7 +76,7 @@ async function logout(){
   accountId=null;authEpoch++;clearInterval(pollTimer);clearSensitive();
   try{const {error}=await client.auth.signOut({scope:'local'});if(error)throw error;$('auth-message').textContent='已登出';}
   catch{$('auth-message').textContent='本機畫面已清除；連線失敗，請關閉此分頁。';}
-  finally{sessionStorage.removeItem('leyisheng-cloud-auth');}
+  finally{try{loginMemory?.clearSession();}catch{$('auth-message').textContent='請關閉此分頁，並清除此網站的登入資料。';}syncLoginChoices();}
 }
 async function saveTransaction(event){
   event.preventDefault();if(!canWrite())return;
@@ -135,10 +137,39 @@ async function importJSON(event){
     if(await mutate(()=>incoming,'備份已完整匯入雲端')){cancelEdit();$('filter-month').value='';renderRecords();}
   }catch(err){alert('無法匯入：'+err.message);}finally{event.target.value='';}
 }
+function syncLoginChoices(){
+  if(!loginMemory)return;
+  $('keep-signed-in').checked=loginMemory.keepSignedIn;
+  $('keep-signed-in-account').checked=loginMemory.keepSignedIn;
+}
+function updateKeepSignedIn(event){
+  if(!loginMemory)return;
+  try{loginMemory.setKeepSignedIn(event.target.checked);syncLoginChoices();if(accountId)showToast(loginMemory.keepSignedIn?'已設定在此裝置保持登入':'已取消保持登入，關閉分頁後需重新登入');}
+  catch{syncLoginChoices();alert('瀏覽器無法保存登入設定，請檢查儲存空間或隱私模式。');}
+}
+async function offerPasswordSave(email,password){
+  if(!$('save-password').checked||!window.PasswordCredential||!navigator.credentials?.store)return;
+  try{await navigator.credentials.store(new window.PasswordCredential({id:email,name:email,password}));}catch{/* Browser and user control whether credentials are saved. */}
+}
 async function boot(){
+  try{
+    loginMemory=new FinanceLoginMemory(()=>window.localStorage,()=>window.sessionStorage);
+    $('login-email').value=loginMemory.email;
+    $('remember-email').checked=loginMemory.rememberEmail;
+    syncLoginChoices();
+  }catch{$('auth-message').textContent='瀏覽器無法使用登入儲存空間，請確認隱私設定。';$('login-btn').disabled=true;return;}
+  $('keep-signed-in').addEventListener('change',updateKeepSignedIn);
+  $('keep-signed-in-account').addEventListener('change',updateKeepSignedIn);
+  $('remember-email').addEventListener('change',()=>{try{loginMemory.saveEmail($('login-email').value.trim(),$('remember-email').checked);}catch{alert('無法記住郵件，請確認瀏覽器允許網站儲存資料。');}});
   $('login-form').addEventListener('submit',async event=>{
     event.preventDefault();if(!client)return;$('login-btn').disabled=true;$('auth-message').textContent='正在登入…';
-    try{const {data,error}=await client.auth.signInWithPassword({email:$('login-email').value.trim(),password:$('login-password').value});if(error)throw error;$('login-password').value='';await handleSession(data.session);}
+    const email=$('login-email').value.trim(),password=$('login-password').value;
+    try{
+      const {data,error}=await client.auth.signInWithPassword({email,password});if(error)throw error;
+      try{loginMemory.saveEmail(email,$('remember-email').checked);}catch{/* Email recall is optional; do not reject a valid session. */}
+      void offerPasswordSave(email,password);
+      $('login-password').value='';await handleSession(data.session);
+    }
     catch{$('auth-message').textContent='登入失敗，請確認帳號、密碼與網路連線。';}
     finally{$('login-btn').disabled=false;}
   });
@@ -149,7 +180,7 @@ async function boot(){
   }
   if(!window.supabase?.createClient){$('auth-message').textContent='登入元件未載入，請重新整理。';$('login-btn').disabled=true;return;}
   try{
-    client=window.supabase.createClient(config.supabaseUrl,config.supabasePublishableKey,{auth:{storage:sessionStorage,storageKey:'leyisheng-cloud-auth',persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}});
+    client=window.supabase.createClient(config.supabaseUrl,config.supabasePublishableKey,{auth:{storage:loginMemory.storage,storageKey:'leyisheng-cloud-auth',persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}});
     client.auth.onAuthStateChange((_event,session)=>{setTimeout(()=>handleSession(session),0);});
     const {data,error}=await client.auth.getSession();if(error)throw error;
     if(data.session)await handleSession(data.session);else $('auth-message').textContent='請使用管理者建立的帳號登入';
