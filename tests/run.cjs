@@ -8,7 +8,7 @@ const state=()=>({schema:1,records:[],templates:[],logo:null});
 const row=(id=1)=>({id,date:'2026-11-04',type:'收入',category:'課程',amount:1600,note:'測試'});
 let passed=0;function test(name,fn){fn();passed++;console.log('PASS',name);}
 (async()=>{
-  test('all shipped JS parses',()=>{for(const f of ['app.js','core.js','cloud-store.js','views.js','sw.js','config.js','vendor/supabase.js'])new vm.Script(read('site/'+f),{filename:f});});
+  test('all shipped JS parses',()=>{for(const f of ['app.js','login-memory.js','core.js','cloud-store.js','views.js','sw.js','config.js','vendor/supabase.js'])new vm.Script(read('site/'+f),{filename:f});});
   test('real date and leap year',()=>{assert(Core.validDate('2024-02-29'));assert(!Core.validDate('2026-02-29'));assert(!Core.validDate('2026-02-30'));assert(!Core.validDate('1899-01-01'));});
   test('monthly end-day remains in target month',()=>{assert.equal(Core.addDateOffset('2026-01-31','monthly',1),'2026-02-28');assert.equal(Core.addDateOffset('2024-01-31','monthly',1),'2024-02-29');assert.equal(Core.addDateOffset('2026-01-31','monthly',2),'2026-03-31');});
   test('weekly rollover',()=>assert.equal(Core.addDateOffset('2026-12-28','weekly',1),'2027-01-04'));
@@ -25,8 +25,9 @@ let passed=0;function test(name,fn){fn();passed++;console.log('PASS',name);}
   fail=true;await assert.rejects(()=>a.commit({...state(),records:[]}));assert.equal(a.state.records.length,1);assert(a.needsReload);await assert.rejects(()=>a.commit(state()));fail=false;await a.load();console.log('PASS failed write preserves state and requires reconciliation');passed++;
   resolveWrite=true;const pending=a.commit({...state(),records:[row(3)]});await assert.rejects(()=>a.commit(state()),/正在儲存/);resolveWrite();resolveWrite=null;await pending;console.log('PASS double submit prevented');passed++;
   a.clear();assert.equal(a.state,null);assert.equal(a.version,null);assert(a.needsReload);console.log('PASS logout clears in-memory ledger');passed++;
-  test('only the site folder is published',()=>{assert(read('.github/workflows/pages.yml').includes('path: site'));assert(!read('site/index.html').includes('localStorage'));assert(!read('site/app.js').includes('localStorage'));assert(!read('site/index.html').includes('window.onload'));});
+  test('only the site folder is published',()=>{assert(read('.github/workflows/pages.yml').includes('path: site'));assert(!read('site/index.html').includes('localStorage'));assert(!read('site/app.js').includes('leyisheng_finance_records'));assert(!read('site/index.html').includes('window.onload'));});
   test('API traffic excluded from service-worker cache',()=>assert(read('site/sw.js').includes('url.origin!==self.location.origin')));
+  require('./login-memory.cjs')();passed++;
   await require('./app.cjs')();passed++;
   console.log(`${passed} checks passed`);
 })().catch(error=>{console.error(error);process.exitCode=1;});
