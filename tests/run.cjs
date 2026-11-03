@@ -1,0 +1,32 @@
+'use strict';
+const fs=require('node:fs');const path=require('node:path');const vm=require('node:vm');const assert=require('node:assert/strict');const crypto=require('node:crypto');
+const root=path.join(__dirname,'..');const read=file=>fs.readFileSync(path.join(root,file),'utf8');
+const context=vm.createContext({Date,JSON,Number,String,Set,Math,Array,Error,RegExp,TextEncoder,crypto,structuredClone});
+vm.runInContext(read('site/core.js'),context);vm.runInContext(read('site/cloud-store.js'),context);
+const Core=vm.runInContext('FinanceCore',context);const Store=vm.runInContext('CloudLedger',context);
+const state=()=>({schema:1,records:[],templates:[],logo:null});
+const row=(id=1)=>({id,date:'2026-11-04',type:'收入',category:'課程',amount:1600,note:'測試'});
+let passed=0;function test(name,fn){fn();passed++;console.log('PASS',name);}
+(async()=>{
+  test('all shipped JS parses',()=>{for(const f of ['app.js','core.js','cloud-store.js','views.js','sw.js','config.js','vendor/supabase.js'])new vm.Script(read('site/'+f),{filename:f});});
+  test('real date and leap year',()=>{assert(Core.validDate('2024-02-29'));assert(!Core.validDate('2026-02-29'));assert(!Core.validDate('2026-02-30'));assert(!Core.validDate('1899-01-01'));});
+  test('monthly end-day remains in target month',()=>{assert.equal(Core.addDateOffset('2026-01-31','monthly',1),'2026-02-28');assert.equal(Core.addDateOffset('2024-01-31','monthly',1),'2024-02-29');assert.equal(Core.addDateOffset('2026-01-31','monthly',2),'2026-03-31');});
+  test('weekly rollover',()=>assert.equal(Core.addDateOffset('2026-12-28','weekly',1),'2027-01-04'));
+  test('invalid amounts and duplicate IDs rejected',()=>{assert.throws(()=>Core.validateState({...state(),records:[{...row(),amount:0}]}));assert.throws(()=>Core.validateState({...state(),records:[{...row(),amount:1.5}]}));assert.throws(()=>Core.validateState({...state(),records:[{...row(),amount:1000000001}]}));assert.throws(()=>Core.validateState({...state(),records:[row(),row()]}));});
+  test('legacy and v2 backups accepted',()=>{assert.equal(Core.fromBackup([row()],state()).records.length,1);assert.equal(Core.fromBackup({version:2,records:[row()],templates:[],logo:null},state()).records[0].amount,1600);});
+  test('backup repair does not mutate source',()=>{const input=[row(),row()];const loaded=Core.fromBackup(input,state());assert.notEqual(loaded.records[0].id,loaded.records[1].id);assert.equal(input[1].id,1);});
+  test('malformed backups and active SVG refused',()=>{assert.throws(()=>Core.fromBackup({version:1},state()));assert.throws(()=>Core.validateState({...state(),logo:'data:image/svg+xml;base64,AAAA'}));assert.throws(()=>Core.validateState({...state(),records:[{...row(),date:'2026-11-04\" onfocus=x'}]}));});
+  let cloud={state:null,version:0,updated_at:null},fail=false,resolveWrite;
+  const api={async rpc(name,args){if(fail)return {error:{code:'NETWORK'}};if(name==='finance_read')return {data:structuredClone(cloud)};if(resolveWrite)await new Promise(resolve=>resolveWrite=resolve);if(args.p_expected_version!==cloud.version)return {error:{code:'40001'}};cloud={state:structuredClone(args.p_state),version:cloud.version+1,updated_at:'2026-11-04T00:00:00Z'};return {data:structuredClone(cloud)};}};
+  const a=new Store(api,state()),b=new Store(api,state());await a.load();await b.load();
+  await a.commit({...state(),records:[row()]});assert.equal(a.version,1);assert.equal(a.state.records.length,1);console.log('PASS acknowledged cloud write');passed++;
+  await assert.rejects(()=>b.commit({...state(),records:[row(2)]}),e=>e.code==='CONFLICT');assert.equal(b.state.records.length,0);assert.equal(cloud.state.records[0].id,1);assert(b.needsReload);console.log('PASS stale device cannot overwrite');passed++;
+  await b.load();assert.equal(b.state.records.length,1);console.log('PASS second device refresh reads same ledger');passed++;
+  fail=true;await assert.rejects(()=>a.commit({...state(),records:[]}));assert.equal(a.state.records.length,1);assert(a.needsReload);await assert.rejects(()=>a.commit(state()));fail=false;await a.load();console.log('PASS failed write preserves state and requires reconciliation');passed++;
+  resolveWrite=true;const pending=a.commit({...state(),records:[row(3)]});await assert.rejects(()=>a.commit(state()),/正在儲存/);resolveWrite();resolveWrite=null;await pending;console.log('PASS double submit prevented');passed++;
+  a.clear();assert.equal(a.state,null);assert.equal(a.version,null);assert(a.needsReload);console.log('PASS logout clears in-memory ledger');passed++;
+  test('only the site folder is published',()=>{assert(read('.github/workflows/pages.yml').includes('path: site'));assert(!read('site/index.html').includes('localStorage'));assert(!read('site/app.js').includes('localStorage'));assert(!read('site/index.html').includes('window.onload'));});
+  test('API traffic excluded from service-worker cache',()=>assert(read('site/sw.js').includes('url.origin!==self.location.origin')));
+  await require('./app.cjs')();passed++;
+  console.log(`${passed} checks passed`);
+})().catch(error=>{console.error(error);process.exitCode=1;});
