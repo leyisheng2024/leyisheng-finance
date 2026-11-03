@@ -1,0 +1,12 @@
+.DS_Store
+.env
+.env.*
+*.pem
+*.key
+node_modules/
+backups/
+private-data/
+*備份*.json
+*報表*.csv
+.supabase/
+work/
