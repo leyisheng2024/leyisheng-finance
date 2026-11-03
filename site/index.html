@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#6E4F3A"><meta name="apple-mobile-web-app-capable" content="yes"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-192.png">
+<title>樂頤生健康管理企業社 - 財務收支管理系統</title>
+
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Heiti TC", sans-serif; background-color: #FDFBF7; color: #6E4F3A; user-select: none; }
+        .serif-title { font-family: "Songti TC", "PMingLiU", "Noto Serif TC", "PingFang TC", serif; }
+        input, select, table { user-select: text; }
+        .editing-highlight { ring: 3px solid #F3CF3D; background-color: #FEF9E7 !important; }
+    </style>
+<style>
+*{box-sizing:border-box;border-width:0;border-style:solid;border-color:#ddd}body{margin:0}h1,h2,p{margin:0}button,input,select{font:inherit;color:inherit}button{cursor:pointer;background:transparent}input,select{min-width:0}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #6E4F3A;outline-offset:3px}[hidden]{display:none!important}
+.align-middle{vertical-align:middle}
+.bg-amber-100{background-color:#fef3c7}
+.bg-brand-bg{background-color:#FDFBF7}
+.bg-brand-bg\/60{background-color:#FDFBF799}
+.bg-brand-brown{background-color:#6E4F3A}
+.bg-brand-green{background-color:#8AB833}
+.bg-brand-greenLight{background-color:#F2F8E8}
+.bg-brand-yellow{background-color:#F3CF3D}
+.bg-brand-yellowLight{background-color:#FEF9E7}
+.bg-brand-yellowLight\/70{background-color:#FEF9E7b2}
+.bg-gray-200{background-color:#e5e7eb}
+.bg-rose-50{background-color:#fff1f2}
+.bg-rose-500{background-color:#f43f5e}
+.bg-white{background-color:#fff}
+.block{display:block}
+.border{border-width:1px}
+.border-2{border-width:2px}
+.border-amber-300{border-color:#fcd34d}
+.border-b{border-bottom-width:1px}
+.border-brand-brown\/10{border-color:#6E4F3A1a}
+.border-brand-brown\/15{border-color:#6E4F3A26}
+.border-brand-brown\/20{border-color:#6E4F3A33}
+.border-brand-green{border-color:#8AB833}
+.border-brand-green\/30{border-color:#8AB8334c}
+.border-brand-green\/40{border-color:#8AB83366}
+.border-brand-yellow{border-color:#F3CF3D}
+.border-brand-yellow\/60{border-color:#F3CF3D99}
+.border-collapse{border-collapse:collapse}
+.border-l-8{border-left-width:8px}
+.border-rose-200{border-color:#fecdd3}
+.border-rose-500{border-color:#f43f5e}
+.bottom-5{bottom:1.25rem}
+.col-span-2{grid-column:span 2 / span 2}
+.cursor-pointer{cursor:pointer}
+.fixed{position:fixed}
+.flex{display:flex}
+.flex-1{flex:1 1 0%}
+.flex-col{flex-direction:column}
+.flex-wrap{flex-wrap:wrap}
+.focus\:border-brand-brown:focus{border-color:#6E4F3A}
+.focus\:border-brand-yellow:focus{border-color:#F3CF3D}
+.focus\:ring-brand-yellow:focus{outline-color:#F3CF3D}
+.font-bold{font-weight:700}
+.font-medium{font-weight:500}
+.font-mono{font-family:ui-monospace,monospace}
+.font-normal{font-weight:400}
+.font-semibold{font-weight:600}
+.gap-1{gap:0.25rem}
+.gap-1\.5{gap:0.375rem}
+.gap-2{gap:0.5rem}
+.gap-3{gap:0.75rem}
+.gap-4{gap:1.0rem}
+.gap-6{gap:1.5rem}
+.grid{display:grid}
+.grid-cols-1{grid-template-columns:repeat(1,minmax(0,1fr))}
+.grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.h-18{height:4.5rem}
+.h-20{height:5.0rem}
+.h-4{height:1.0rem}
+.h-fit{height:fit-content}
+.h-full{height:100%}
+.hidden{display:none}
+.hover\:bg-amber-200:hover{background-color:#fde68a}
+.hover\:bg-brand-brownDark:hover{background-color:#543B2B}
+.hover\:bg-brand-green\/20:hover{background-color:#8AB83333}
+.hover\:bg-brand-green\/30:hover{background-color:#8AB8334c}
+.hover\:bg-brand-yellow:hover{background-color:#F3CF3D}
+.hover\:bg-brand-yellow\/30:hover{background-color:#F3CF3D4c}
+.hover\:bg-brand-yellow\/40:hover{background-color:#F3CF3D66}
+.hover\:bg-brand-yellow\/50:hover{background-color:#F3CF3D7f}
+.hover\:bg-brand-yellow\/60:hover{background-color:#F3CF3D99}
+.hover\:bg-brand-yellowDark:hover{background-color:#E0B824}
+.hover\:bg-brand-yellowLight\/50:hover{background-color:#FEF9E77f}
+.hover\:bg-gray-300:hover{background-color:#d1d5db}
+.hover\:bg-rose-100:hover{background-color:#ffe4e6}
+.hover\:bg-rose-600:hover{background-color:#e11d48}
+.hover\:border-brand-yellow:hover{border-color:#F3CF3D}
+.hover\:text-brand-brown:hover{color:#6E4F3A}
+.hover\:text-rose-500:hover{color:#f43f5e}
+.hover\:text-rose-600:hover{color:#e11d48}
+.inline-flex{display:inline-flex}
+.items-center{align-items:center}
+.items-start{align-items:flex-start}
+.justify-between{justify-content:space-between}
+.justify-center{justify-content:center}
+.leading-snug{line-height:1.375}
+@media(min-width:1024px){.lg\:col-span-5{grid-column:span 5 / span 5}}
+@media(min-width:1024px){.lg\:col-span-7{grid-column:span 7 / span 7}}
+@media(min-width:1024px){.lg\:grid-cols-12{grid-template-columns:repeat(12,minmax(0,1fr))}}
+.m-1{margin:0.25rem}
+.max-w-7xl{max-width:80rem}
+.mb-1{margin-bottom:0.25rem}
+.mb-1\.5{margin-bottom:0.375rem}
+.mb-3{margin-bottom:0.75rem}
+.mb-4{margin-bottom:1.0rem}
+.mb-6{margin-bottom:1.5rem}
+@media(min-width:768px){.md\:flex-row{flex-direction:row}}
+@media(min-width:768px){.md\:grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(min-width:768px){.md\:mt-0{margin-top:0.0rem}}
+@media(min-width:768px){.md\:p-6{padding:1.5rem}}
+@media(min-width:768px){.md\:text-3xl{font-size:1.875rem;line-height:1.3}}
+@media(min-width:768px){.md\:text-sm{font-size:.875rem;line-height:1.5}}
+.ml-0\.5{margin-left:0.125rem}
+.ml-1{margin-left:0.25rem}
+.mt-0\.5{margin-top:0.125rem}
+.mt-1{margin-top:0.25rem}
+.mt-3{margin-top:0.75rem}
+.mt-4{margin-top:1.0rem}
+.mx-auto{margin-left:auto;margin-right:auto}
+.object-contain{object-fit:contain}
+.opacity-0{opacity:0}
+.overflow-hidden{overflow:hidden}
+.overflow-x-auto{overflow-x:auto}
+.p-1{padding:0.25rem}
+.p-1\.5{padding:0.375rem}
+.p-2\.5{padding:0.625rem}
+.p-3{padding:0.75rem}
+.p-3\.5{padding:0.875rem}
+.p-4{padding:1.0rem}
+.p-5{padding:1.25rem}
+.p-6{padding:1.5rem}
+.pb-2{padding-bottom:0.5rem}
+.pb-3{padding-bottom:0.75rem}
+.pointer-events-none{pointer-events:none}
+.pt-1{padding-top:0.25rem}
+.pt-2{padding-top:0.5rem}
+.px-1{padding-left:0.25rem;padding-right:0.25rem}
+.px-1\.5{padding-left:0.375rem;padding-right:0.375rem}
+.px-2{padding-left:0.5rem;padding-right:0.5rem}
+.px-2\.5{padding-left:0.625rem;padding-right:0.625rem}
+.px-3{padding-left:0.75rem;padding-right:0.75rem}
+.px-3\.5{padding-left:0.875rem;padding-right:0.875rem}
+.px-4{padding-left:1.0rem;padding-right:1.0rem}
+.py-0\.5{padding-top:0.125rem;padding-bottom:0.125rem}
+.py-1{padding-top:0.25rem;padding-bottom:0.25rem}
+.py-12{padding-top:3.0rem;padding-bottom:3.0rem}
+.py-2{padding-top:0.5rem;padding-bottom:0.5rem}
+.py-2\.5{padding-top:0.625rem;padding-bottom:0.625rem}
+.py-3{padding-top:0.75rem;padding-bottom:0.75rem}
+.right-5{right:1.25rem}
+.ring-4{outline:4px solid #F3CF3D}
+.ring-brand-yellow{outline-color:#F3CF3D}
+.rounded{border-radius:.25rem}
+.rounded-2xl{border-radius:1rem}
+.rounded-3xl{border-radius:1.5rem}
+.rounded-full{border-radius:9999px}
+.rounded-lg{border-radius:.5rem}
+.rounded-tl-lg{border-top-left-radius:.5rem}
+.rounded-tr-lg{border-top-right-radius:.5rem}
+.rounded-xl{border-radius:.75rem}
+.shadow{box-shadow:0 2px 5px #543b2b18}
+.shadow-lg{box-shadow:0 8px 20px #543b2b22}
+.shadow-sm{box-shadow:0 1px 3px #543b2b12}
+.shrink-0{flex-shrink:0}
+@media(min-width:640px){.sm\:flex-row{flex-direction:row}}
+@media(min-width:640px){.sm\:items-center{align-items:center}}
+@media(min-width:640px){.sm\:text-left{text-align:left}}
+@media(min-width:640px){.sm\:w-40{width:10.0rem}}
+@media(min-width:640px){.sm\:w-auto{width:auto}}
+.space-y-4 > * + *{margin-top:1.0rem}
+.text-2xl{font-size:1.5rem;line-height:1.35}
+.text-amber-600{color:#d97706}
+.text-base{font-size:1rem;line-height:1.5}
+.text-brand-brown{color:#6E4F3A}
+.text-brand-brown\/30{color:#6E4F3A4c}
+.text-brand-brown\/40{color:#6E4F3A66}
+.text-brand-brown\/50{color:#6E4F3A7f}
+.text-brand-brown\/60{color:#6E4F3A99}
+.text-brand-brown\/70{color:#6E4F3Ab2}
+.text-brand-brown\/75{color:#6E4F3Abf}
+.text-brand-brown\/80{color:#6E4F3Acc}
+.text-brand-green{color:#8AB833}
+.text-center{text-align:center}
+.text-left{text-align:left}
+.text-lg{font-size:1.125rem;line-height:1.5}
+.text-right{text-align:right}
+.text-rose-500{color:#f43f5e}
+.text-rose-600{color:#e11d48}
+.text-rose-700{color:#be123c}
+.text-sm{font-size:.875rem;line-height:1.5}
+.text-white{color:#fff}
+.text-xs{font-size:.75rem;line-height:1.5}
+.tracking-widest{letter-spacing:.1em}
+.transition{transition:background-color .15s,box-shadow .15s}
+.transition-all{transition:all .15s}
+.transition-opacity{transition:opacity .2s}
+.underline{text-decoration:underline}
+.w-18{width:4.5rem}
+.w-20{width:5.0rem}
+.w-28{width:7.0rem}
+.w-32{width:8.0rem}
+.w-4{width:1.0rem}
+.w-full{width:100%}
+.whitespace-nowrap{white-space:nowrap}
+.z-50{z-index:50}
+
+body{user-select:text;padding-bottom:env(safe-area-inset-bottom)}
+button, a, input, select{touch-action:manipulation}button{min-height:44px}input:not([type=checkbox]):not([type=hidden]),select{min-height:44px;font-size:16px;max-width:100%}input[type=checkbox]{width:20px;height:20px;accent-color:#6E4F3A}table{width:100%}td{overflow-wrap:anywhere}#templates-container>div{min-height:44px}#templates-container span{padding:8px 0}#templates-container button{min-width:36px}.app-nav{position:sticky;top:0;z-index:20;display:flex;gap:8px;padding:8px max(16px,env(safe-area-inset-left));background:#fdfbf7f5;border-bottom:1px solid #6e4f3a20}.app-nav a,.app-nav button{display:flex;align-items:center;justify-content:center;text-decoration:none;padding:10px 16px;border-radius:12px;background:#6E4F3A;color:white;font-weight:600;min-height:44px}.device-note{max-width:80rem;margin:12px auto 0;padding:0 16px;font-size:13px;line-height:1.7;color:#6E4F3A}#history-card,#form-card{scroll-margin-top:80px}#toast{max-width:calc(100vw - 40px)}
+@media(max-width:767px){body>.max-w-7xl{padding:12px}header{padding:16px!important}h1{font-size:23px!important;letter-spacing:.05em!important}#form-card,#history-card{padding:16px}table,tbody{display:block}thead{display:none}#records-tbody tr{display:grid;grid-template-columns:1fr 1fr;border:1px solid #6e4f3a24;border-radius:16px;margin:12px 0;padding:10px;background:#fff}#records-tbody td{display:block;padding:6px;text-align:left;white-space:normal;min-width:0}#records-tbody td:nth-child(2){text-align:right}#records-tbody td:nth-child(3),#records-tbody td:nth-child(5){grid-column:1/-1}#records-tbody td:nth-child(4){grid-column:1/-1;font-size:20px}#records-tbody td:nth-child(5)>div{display:flex;justify-content:space-between;gap:8px}#records-tbody td:nth-child(5) button{min-width:48px;min-height:44px;font-size:17px}#form-card .flex.justify-between{flex-wrap:wrap;gap:8px}#filter-month{max-width:180px}.overflow-x-auto{overflow:visible}.whitespace-nowrap{white-space:normal}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+@media print{.app-nav,header button,#form-card,#toast,.device-note{display:none!important}#history-card{width:100%}#records-tbody td:last-child,thead th:last-child{display:none}body{background:white}}
+
+</style><style>
+.auth-panel{max-width:480px;margin:5vh auto;padding:28px;border:1px solid #6e4f3a22;border-radius:24px;background:white;box-shadow:0 8px 40px #6e4f3a0a}.auth-panel>img{object-fit:contain}.auth-panel h1{font-size:25px;margin:12px 0}.auth-panel p{line-height:1.8;margin:12px 0}.auth-panel form{display:grid;gap:10px}.auth-panel input{width:100%;padding:12px;border:1px solid #6e4f3a55;border-radius:12px}.auth-panel button{margin-top:12px;padding:12px;border-radius:12px;background:#6e4f3a;color:white;font-weight:700}.small-note{font-size:13px;opacity:.8}.sync-status{padding:12px 16px;background:#f2f8e8;border-bottom:1px solid #6e4f3a11;overflow-wrap:anywhere}.sync-status[data-error=true]{background:#fff0ed;color:#9c2920}.app-nav{flex-wrap:wrap;align-items:center}.app-nav #account-name{font-size:12px;overflow-wrap:anywhere;max-width:240px;margin-right:auto}button:disabled,input:disabled,select:disabled{opacity:.55;cursor:wait}#ledger-content[inert]{opacity:.6}#auth-message{overflow-wrap:anywhere;color:#8c3b23}@media(max-width:600px){.auth-panel{margin:16px;padding:20px}.app-nav a,.app-nav button{font-size:13px;padding:8px 10px}.app-nav #account-name{width:100%;max-width:none}}
+</style></head>
+<body>
+<section id="auth-panel" class="auth-panel" aria-labelledby="login-title">
+<img src="logo.png" alt="樂頤生" width="76" height="76">
+<h1 id="login-title">樂頤生雲端財務系統</h1>
+<p>登入後即可在手機、平板與電腦使用同一份帳本。</p>
+<form id="login-form">
+<label for="login-email">電子郵件</label><input id="login-email" type="email" required autocomplete="username">
+<label for="login-password">密碼</label><input id="login-password" type="password" required autocomplete="current-password">
+<button id="login-btn" type="submit">登入帳本</button>
+</form><p id="auth-message" role="status" aria-live="polite">正在檢查連線設定…</p>
+<p class="small-note">帳號由管理者建立。登入狀態保存在目前分頁；登出後清除畫面資料。</p>
+</section><div id="app-shell" hidden>
+<div id="storage-warning" role="alert" hidden style="background:#fff0ef;color:#91251e;padding:16px"></div>
+<nav class="app-nav"><span id="account-name"></span><button id="refresh-btn" type="button">重新整理</button><button id="logout-btn" type="button">登出</button><a href="#form-card">＋ 記一筆</a><a href="#history-card">收支明細</a><button id="install-btn" hidden>安裝程式</button></nav>
+<p id="sync-status" class="sync-status" role="status" aria-live="polite"></p><p class="device-note">雲端同步版 · 儲存成功後，其他裝置可讀取相同帳務。離線時暫停寫入，請定期下載備份。</p>
+    <div id="ledger-content" class="max-w-7xl mx-auto p-4 md:p-6">
+        <!-- 頂部品牌視覺橫幅 -->
+        <header class="bg-white rounded-3xl p-5 md:p-6 shadow-sm mb-6 flex flex-col md:flex-row justify-between items-center border-2 border-brand-yellow/60">
+            <div class="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
+                <div onclick="document.getElementById('logo-upload').click()" title="點擊可選擇電腦中的原始 Logo 圖檔" class="w-20 h-20 rounded-2xl bg-white flex items-center justify-center cursor-pointer hover:scale-105 transition shadow-sm border border-brand-brown/10 overflow-hidden shrink-0">
+                    <img id="custom-logo-img" src="logo.png" class="w-full h-full object-contain" alt="樂頤生健康管理">
+                    <svg id="default-logo-svg" viewBox="80 55 360 395" class="w-18 h-18 hidden">
+                        <g fill="#F3CF3D">
+                            <ellipse cx="120" cy="180" rx="22" ry="10" transform="rotate(15 120 180)"/>
+                            <ellipse cx="145" cy="135" rx="25" ry="11" transform="rotate(38 145 135)"/>
+                            <ellipse cx="185" cy="102" rx="20" ry="10" transform="rotate(62 185 102)"/>
+                            <ellipse cx="235" cy="85" rx="26" ry="12" transform="rotate(82 235 85)"/>
+                            <ellipse cx="285" cy="90" rx="22" ry="10" transform="rotate(102 285 90)"/>
+                        </g>
+                        <circle cx="265" cy="255" r="142" fill="#F3CF3D"/>
+                        <circle cx="235" cy="155" r="8.5" fill="#FFFFFF"/>
+                        <circle cx="292" cy="155" r="8.5" fill="#FFFFFF"/>
+                        <rect x="260" y="158" width="7" height="14" rx="3.5" fill="#FFFFFF"/>
+                        <path d="M 222 182 Q 263 212 304 182" fill="none" stroke="#FFFFFF" stroke-width="8.5" stroke-linecap="round"/>
+                        <path d="M 272 397 L 272 360 C 272 315 190 305 190 238 C 190 200 245 215 276 312 C 292 252 348 250 348 288 C 348 330 288 332 288 365 L 288 397 Z" fill="#FFFFFF"/>
+                        <path d="M 220 232 Q 220 253 199 253 Q 220 253 220 274 Q 220 253 241 253 Q 220 253 220 232 Z" fill="#F3CF3D"/>
+                        <g transform="translate(308, 224)">
+                            <ellipse cx="0" cy="-24" rx="12" ry="22" fill="#FFFFFF" transform="rotate(12)"/>
+                            <ellipse cx="0" cy="-24" rx="12" ry="22" fill="#FFFFFF" transform="rotate(72)"/>
+                            <ellipse cx="0" cy="-24" rx="12" ry="22" fill="#FFFFFF" transform="rotate(132)"/>
+                            <ellipse cx="0" cy="-24" rx="12" ry="22" fill="#FFFFFF" transform="rotate(192)"/>
+                            <ellipse cx="0" cy="-24" rx="12" ry="22" fill="#FFFFFF" transform="rotate(252)"/>
+                            <ellipse cx="0" cy="-24" rx="12" ry="22" fill="#FFFFFF" transform="rotate(312)"/>
+                            <circle cx="0" cy="0" r="14" fill="#8AB833"/>
+                        </g>
+                        <path d="M 252 432 C 252 394 308 394 308 432 Z" fill="#6E4F3A"/>
+                    </svg>
+                    <input type="file" id="logo-upload" accept="image/png,image/jpeg,image/webp,image/gif" class="hidden" onchange="uploadCustomLogo(event)">
+                </div>
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-bold tracking-widest text-brand-brown serif-title">樂頤生健康管理企業社</h1>
+                    <p class="text-brand-brown/75 mt-1 text-xs md:text-sm font-medium tracking-widest">Health Management · 財務收支管理系統</p>
+                </div>
+            </div>
+            <div class="mt-4 md:mt-0 flex flex-wrap justify-center gap-2">
+                <button onclick="exportCSV()" class="bg-brand-brown text-white hover:bg-brand-brownDark font-semibold py-2 px-3.5 rounded-xl shadow-sm text-sm flex items-center transition">
+                    📥 匯出全部 CSV
+                </button>
+                <button onclick="backupJSON()" class="bg-brand-yellowLight text-brand-brown hover:bg-brand-yellow/40 font-semibold py-2 px-3 rounded-xl shadow-sm text-sm border border-brand-brown/15 transition">
+                    💾 備份
+                </button>
+                <button onclick="document.getElementById('import-json').click()" class="bg-brand-yellowLight text-brand-brown hover:bg-brand-yellow/40 font-semibold py-2 px-3 rounded-xl shadow-sm text-sm border border-brand-brown/15 transition">
+                    📂 匯入
+                </button>
+                <input type="file" id="import-json" accept=".json" class="hidden" onchange="importJSON(event)">
+                <button onclick="clearAllData()" class="bg-rose-500 hover:bg-rose-600 text-white font-semibold py-2 px-3 rounded-xl shadow-sm text-sm transition">
+                    🗑️ 清空帳務
+                </button>
+            </div>
+        </header>
+
+        <!-- 總覽數據卡片 (隨月份篩選連動) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div class="bg-white p-5 rounded-2xl shadow-sm border-l-8 border-brand-green border border-brand-brown/10">
+                <p id="income-card-title" class="text-sm text-brand-brown/70 font-medium">當前篩選 - 總收入</p>
+                <p id="total-income" class="text-2xl font-bold text-brand-green mt-1">NT$ 0</p>
+            </div>
+            <div class="bg-white p-5 rounded-2xl shadow-sm border-l-8 border-rose-500 border border-brand-brown/10">
+                <p id="expense-card-title" class="text-sm text-brand-brown/70 font-medium">當前篩選 - 總支出</p>
+                <p id="total-expense" class="text-2xl font-bold text-rose-500 mt-1">NT$ 0</p>
+            </div>
+            <div class="bg-white p-5 rounded-2xl shadow-sm border-l-8 border-brand-yellow border border-brand-brown/10">
+                <p id="balance-card-title" class="text-sm text-brand-brown/70 font-medium">當前篩選 - 淨利結餘</p>
+                <p id="net-balance" class="text-2xl font-bold text-brand-brown mt-1">NT$ 0</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- 左側：新增與修改收支表單 (佔 5 欄) -->
+            <div id="form-card" class="bg-white p-6 rounded-2xl shadow-sm border border-brand-brown/10 lg:col-span-5 h-fit transition-all">
+                <div class="flex justify-between items-center mb-3 border-b border-brand-brown/10 pb-2">
+                    <h2 id="form-title" class="text-lg font-bold text-brand-brown">➕ 新增帳務紀錄</h2>
+                    <button type="button" onclick="saveCurrentAsTemplate()" class="text-xs bg-brand-yellowLight hover:bg-brand-yellow/40 text-brand-brown font-semibold py-1 px-2.5 rounded-lg border border-brand-brown/20 transition" title="將目前填寫的內容存成上方快捷按鈕">
+                        ⭐ 存為常用範本
+                    </button>
+                </div>
+
+                <!-- ⚡ 常用課程/據點快捷範本區 -->
+                <div class="mb-4 bg-brand-bg p-3 rounded-xl border border-brand-brown/10">
+                    <div class="flex justify-between items-center mb-1.5">
+                        <span class="text-xs font-bold text-brand-brown/80">⚡ 常用課程與據點快捷鍵（點擊自動帶入）：</span>
+                    </div>
+                    <div id="templates-container" class="flex flex-wrap gap-1.5"></div>
+                </div>
+
+                <form id="transaction-form" class="space-y-4">
+                    <input type="hidden" id="editing-id" value="">
+
+                    <!-- 日期設定與快速切換鍵 -->
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="block text-sm font-medium text-brand-brown">日期設定</label>
+                            <div class="flex gap-1">
+                                <button type="button" onclick="quickSetDate(-7)" class="text-xs px-1.5 py-0.5 rounded bg-brand-yellowLight hover:bg-brand-yellow/50 text-brand-brown border border-brand-brown/15 transition">上週</button>
+                                <button type="button" onclick="quickSetDate(-1)" class="text-xs px-1.5 py-0.5 rounded bg-brand-yellowLight hover:bg-brand-yellow/50 text-brand-brown border border-brand-brown/15 transition">昨天</button>
+                                <button type="button" onclick="quickSetDate(0)" class="text-xs px-1.5 py-0.5 rounded bg-brand-brown text-white font-semibold transition">今天</button>
+                                <button type="button" onclick="quickSetDate(1)" class="text-xs px-1.5 py-0.5 rounded bg-brand-yellowLight hover:bg-brand-yellow/50 text-brand-brown border border-brand-brown/15 transition">明天</button>
+                                <button type="button" onclick="quickSetDate(7)" class="text-xs px-1.5 py-0.5 rounded bg-brand-yellowLight hover:bg-brand-yellow/50 text-brand-brown border border-brand-brown/15 transition">下週</button>
+                            </div>
+                        </div>
+                        <input type="date" id="date" required class="w-full border-brand-brown/20 rounded-xl shadow-sm focus:ring-brand-yellow focus:border-brand-yellow p-2.5 border text-brand-brown font-mono">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-brand-brown mb-1">收支類型</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button type="button" id="btn-income" onclick="setType('收入')" class="py-2.5 px-4 rounded-xl font-bold border text-center transition bg-brand-green text-white border-brand-green shadow-sm">
+                                💰 營業收入
+                            </button>
+                            <button type="button" id="btn-expense" onclick="setType('支出')" class="py-2.5 px-4 rounded-xl font-bold border text-center transition bg-brand-yellowLight text-brand-brown/70 border-brand-brown/15 hover:bg-brand-yellow/30">
+                                💸 營業支出
+                            </button>
+                        </div>
+                        <input type="hidden" id="type" value="收入">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-brand-brown mb-1">項目分類</label>
+                        <select id="category" required class="w-full border-brand-brown/20 rounded-xl shadow-sm focus:ring-brand-yellow focus:border-brand-yellow p-2.5 border bg-white text-brand-brown"></select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-brand-brown mb-1">單筆金額 (NT$)</label>
+                        <input type="number" id="amount" max="1000000000" min="1" placeholder="例如：1600" required class="w-full border-brand-brown/20 rounded-xl shadow-sm focus:ring-brand-yellow focus:border-brand-yellow p-2.5 border text-brand-brown">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-brand-brown mb-1">專案名稱 / 合作單位 / 備註</label>
+                        <input type="text" id="note" maxlength="2000" list="recent-notes" placeholder="例如：瑪樂筏文健站、復健診所團課" class="w-full border-brand-brown/20 rounded-xl shadow-sm focus:ring-brand-yellow focus:border-brand-yellow p-2.5 border text-brand-brown">
+                        <datalist id="recent-notes"></datalist>
+                    </div>
+
+                    <!-- 📅 週期性批次重複登記設定 -->
+                    <div id="recurring-box" class="bg-brand-yellowLight/70 p-3.5 rounded-xl border border-brand-yellow">
+                        <label class="flex items-center gap-2 cursor-pointer text-sm font-bold text-brand-brown">
+                            <input type="checkbox" id="is-recurring" onchange="toggleRecurring()" class="rounded text-brand-brown focus:ring-brand-yellow w-4 h-4">
+                            <span>📅 開啟「多堂課 / 週期性」批次重複登記</span>
+                        </label>
+                        <div id="recurring-options" class="hidden mt-3 grid grid-cols-2 gap-2 pt-2 border-t border-brand-brown/10">
+                            <div>
+                                <label class="block text-xs font-medium text-brand-brown/80 mb-1">重複頻率</label>
+                                <select id="repeat-freq" class="w-full border-brand-brown/20 rounded-lg p-1.5 text-sm bg-white text-brand-brown border">
+                                    <option value="weekly">每週同一天</option>
+                                    <option value="biweekly">每兩週一次</option>
+                                    <option value="daily">每天連續</option>
+                                    <option value="monthly">每月同一日</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-brand-brown/80 mb-1">總共連續幾次(堂)</label>
+                                <input type="number" id="repeat-count" value="12" min="2" max="100" class="w-full border-brand-brown/20 rounded-lg p-1.5 text-sm bg-white text-brand-brown border">
+                            </div>
+                            <p class="col-span-2 text-xs text-brand-brown/70 mt-1">
+                                💡 系統將從上方選擇的日期開始，自動幫您產生對應堂數並標註 (1/N) 期數。
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 送出與取消修改按鈕組 -->
+                    <div class="flex gap-2">
+                        <button type="submit" id="submit-btn" class="flex-1 bg-brand-yellow hover:bg-brand-yellowDark text-brand-brown font-bold py-3 px-4 rounded-xl shadow transition text-base">
+                            確認儲存紀錄
+                        </button>
+                        <button type="button" id="cancel-edit-btn" onclick="cancelEdit()" class="hidden bg-gray-200 hover:bg-gray-300 text-brand-brown font-bold py-3 px-4 rounded-xl transition text-sm">
+                            取消修改
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- 收支明細 -->
+            <div id="history-card" class="bg-white p-6 rounded-2xl shadow-sm border border-brand-brown/10 lg:col-span-7">
+                <div class="flex flex-col mb-4 border-b border-brand-brown/10 pb-3 gap-3">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                        <div>
+                            <h2 class="text-lg font-bold text-brand-brown">📋 收支明細列表</h2>
+                            <p class="text-xs text-brand-brown/60">💡 點擊日期可直接修改；手機以卡片顯示；匯出 CSV 包含全部紀錄</p>
+                        </div>
+                        <!-- 快速月份導航列 -->
+                        <div class="flex items-center gap-1 bg-brand-yellowLight p-1 rounded-xl border border-brand-yellow">
+                            <button onclick="shiftMonth(-1)" class="px-2.5 py-1 rounded-lg bg-white text-brand-brown text-xs font-semibold shadow-sm hover:bg-brand-yellow transition" title="上個月">◀ 上月</button>
+                            <button onclick="setMonthCurrent()" class="px-2.5 py-1 rounded-lg bg-brand-brown text-white text-xs font-semibold shadow-sm hover:bg-brand-brownDark transition">本月</button>
+                            <button onclick="shiftMonth(1)" class="px-2.5 py-1 rounded-lg bg-white text-brand-brown text-xs font-semibold shadow-sm hover:bg-brand-yellow transition" title="下個月">下月 ▶</button>
+                        </div>
+                    </div>
+
+                    <!-- 進階篩選與搜尋列 -->
+                    <div class="flex flex-wrap gap-2 items-center justify-between pt-1">
+                        <div class="flex flex-wrap gap-2 items-center">
+                            <input type="month" id="filter-month" onchange="renderRecords()" class="border border-brand-brown/20 rounded-xl p-1.5 text-sm bg-white text-brand-brown font-mono shadow-sm">
+                            <select id="filter-type" onchange="renderRecords()" class="border border-brand-brown/20 rounded-xl p-1.5 text-sm bg-white text-brand-brown shadow-sm">
+                                <option value="all">全部類型</option>
+                                <option value="收入">僅看收入</option>
+                                <option value="支出">僅看支出</option>
+                            </select>
+                        </div>
+                        <div class="flex gap-2 items-center w-full sm:w-auto">
+                            <input type="text" id="filter-keyword" oninput="renderRecords()" placeholder="🔍 搜尋據點、備註..." class="border border-brand-brown/20 rounded-xl p-1.5 text-sm bg-white text-brand-brown flex-1 sm:w-40 shadow-sm">
+                            <button onclick="resetFilters()" class="text-xs text-brand-brown/70 hover:text-brand-brown underline px-1 shrink-0">重置</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-brand-yellowLight text-brand-brown text-sm border-b border-brand-brown/10">
+                                <th class="py-3 px-3 rounded-tl-lg w-32">日期</th>
+                                <th class="py-3 px-2 w-20">類型</th>
+                                <th class="py-3 px-4">分類與專案備註</th>
+                                <th class="py-3 px-3 text-right w-28">金額</th>
+                                <th class="py-3 px-3 text-center rounded-tr-lg w-32">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="records-tbody" class="divide-y divide-brand-brown/10 text-sm"></tbody>
+                    </table>
+                    <div id="empty-state" class="text-center py-12 text-brand-brown/50 hidden">
+                        🌱 目前尚無符合條件的收支紀錄，請調整月份篩選或新增一筆紀錄！
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 頂部浮動通知 -->
+    <div role="status" aria-live="polite" id="toast" class="fixed bottom-5 right-5 bg-brand-brown text-white px-4 py-2.5 rounded-xl shadow-lg text-sm font-medium transition-opacity duration-300 opacity-0 pointer-events-none z-50"></div>
+
+    
+</div><script src="config.js"></script><script src="vendor/supabase.js"></script><script src="core.js"></script><script src="cloud-store.js"></script><script src="views.js"></script><script src="app.js"></script></body>
+</html>
