@@ -1,0 +1,61 @@
+name: Publish finance app
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci
+      - run: npm test
+      - run: npm run test:db
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate public Supabase config
+        env:
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_PUBLISHABLE_KEY: ${{ vars.SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          python3 - <<'PY'
+          import os, re, json
+          text=open('site/config.js').read()
+          match=re.search(r'window\.FINANCE_CONFIG\s*=\s*([\s\S]*?);',text)
+          try:
+              current=json.loads(match.group(1)) if match else {}
+          except ValueError:
+              current={}
+          url=(os.environ.get('SUPABASE_URL') or current.get('supabaseUrl','')).rstrip('/')
+          key=os.environ.get('SUPABASE_PUBLISHABLE_KEY') or current.get('supabasePublishableKey','')
+          if not re.fullmatch(r'https://[a-z0-9-]+\.supabase\.co',url):
+              raise SystemExit('Set the SUPABASE_URL repository variable')
+          if not re.fullmatch(r'sb_publishable_[A-Za-z0-9_-]+',key):
+              raise SystemExit('Set SUPABASE_PUBLISHABLE_KEY to a publishable browser key, never a secret key')
+          config={'supabaseUrl':url,'supabasePublishableKey':key}
+          open('site/config.js','w').write('window.FINANCE_CONFIG = '+json.dumps(config)+';\n')
+          PY
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
