@@ -1,6 +1,6 @@
 'use strict';
-const CACHE='leyisheng-cloud-v2-login-memory';
-const FILES=['./','./index.html','./config.js','./core.js','./cloud-store.js','./views.js','./app.js','./login-memory.js','./vendor/supabase.js','./logo.png','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
+const CACHE='leyisheng-cloud-v3-login-memory';
+const FILES=['./','./index.html','./config.js','./core.js','./cloud-store.js','./views.js','./app.js?v=login-memory-2','./login-memory.js?v=login-memory-2','./vendor/supabase.js','./logo.png','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(FILES))));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('leyisheng-')&&k!==CACHE).map(k=>caches.delete(k))))));
 self.addEventListener('fetch',event=>{
